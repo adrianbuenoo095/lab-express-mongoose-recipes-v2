@@ -58,12 +58,31 @@ app.get('/recipes/:recipeId', async (request, response) => {
 
 //  Iteration 6 - Update a Single Recipe
 //  PUT  /recipes/:id route
-
+app.put('/recipes/:recipeId', async (request, response) => {
+    console.log(request.body)
+    const payload = request.body
+    try {
+        const updatedRecipe = await Recipe.findByIdAndUpdate(request.params.recipeId, payload, { new: true })
+        response.status(200).json(updatedRecipe)
+    } catch (error) {
+        console.log(error)
+        response.status(500).json({ message: 'Something bad happened' })
+    }
+})
 
 //  Iteration 7 - Delete a Single Recipe
 //  DELETE  /recipes/:id route
 
-
+app.delete('/recipes/:recipeId', async (request, response) => {
+    const { recipeId } = request.params
+    try {
+        const recipeToDelete = await Recipe.findByIdAndDelete(recipeId)
+        response.status(204).json({ message: `${recipeToDelete.title} was remove from the db` })
+    } catch (error) {
+        console.log(error)
+        response.status(500).json({ message: 'Something bad happened' })
+    }
+})
 
 // Start the server
 app.listen(3000, () => console.log('My first app listening on port 3000!'));
